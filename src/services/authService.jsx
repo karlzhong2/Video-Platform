@@ -36,6 +36,22 @@ export const verifyCode = async (email, verificationCode) => {
   }
 };
 
+export const getUserData = async (id) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/users/${id}`);
+    return {
+      success: response.status === 200,
+      data: response.data
+    };
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+    return {
+      success: false,
+      data: { message: error.message || 'Failed to connect to the server' }
+    };
+  }
+};
+
 
 
 

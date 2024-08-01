@@ -1,19 +1,22 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import ChevronIcon from '../../assets/images/chevron-left.png'
+import { useTranslation } from 'react-i18next';
+import ChevronIcon from '../../assets/images/chevron-left.png';
 
-const ProfileFunctionComponent = () => {
+const ProfileFunctionComponent = ({ onLanguageSelect }) => {
+  const { t } = useTranslation();
+
   const items = [
-    { key: 'likes', text: 'My Likes' },
-    { key: 'favourites', text: 'My Favourites' },
-    { key: 'history', text: 'Purchase History' },
-    { key: 'language', text: 'Language' }
+    { key: 'likes', text: t('My Likes') },
+    { key: 'favourites', text: t('My Favourites') },
+    { key: 'history', text: t('Purchase History') },
+    { key: 'language', text: t('Language') }
   ];
 
   return (
     <View style={styles.container}>
       {items.map(item => (
-        <TouchableOpacity key={item.key} style={styles.itemContainer}>
+        <TouchableOpacity key={item.key} style={styles.itemContainer} onPress={() => item.key === 'language' && onLanguageSelect()}>
           <Text style={styles.itemText}>{item.text}</Text>
           <Image source={ChevronIcon} style={styles.chevronIcon} />
         </TouchableOpacity>
@@ -21,6 +24,9 @@ const ProfileFunctionComponent = () => {
     </View>
   );
 };
+
+
+
 
 const styles = StyleSheet.create({
   container: {
@@ -35,10 +41,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     width: 390,  // 固定宽度
-    height: 56,  // 动态高度
+    height: 50,  // 动态高度
     paddingHorizontal: 24, // 左右内边距
-    borderBottomWidth: 1, // 底部边框宽度
-    borderColor: '#FFFFFF50', // 边框颜色
+    borderColor: '#070A1A', // 边框颜色
   },
   itemText: {
     fontFamily: 'Nunito',
@@ -46,12 +51,12 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     lineHeight: 21.82,
     color: '#FFFFFF',
-    width: 63, // 宽度调整
+    width: 200, // 宽度调整
     height: 22, // 高度调整
   },
   chevronIcon: {
-    width: 24,  // 确保图标宽度为24px
-    height: 24, // 确保图标高度为24px
+    width: 15,  // 确保图标宽度为24px
+    height: 15, // 确保图标高度为24px
     opacity: 1, // 确保图标不透明度为1
   }
 });

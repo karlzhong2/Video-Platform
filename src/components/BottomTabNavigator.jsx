@@ -1,13 +1,20 @@
+
 // import React from 'react';
 // import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 // import { Image, Text, View, StyleSheet } from 'react-native';
-// import HomeScreen from './HomeScreen';
-// import ForYouScreen from './ForYouScreen';
-// import ProfileScreen from './ProfileScreen';
+// import ProfileScreen from '../screens/ProfileScreen'; 
+// import GuestScreen from '../screens/GuestScreen'; 
+
+// // 导入图标
+// import HomeIcon from '../../assets/images/Home.png';
+// import ForYouIcon from '../../assets/images/ForYou.png';
+// import ProfileIcon from '../../assets/images/Profile.png';
 
 // const Tab = createBottomTabNavigator();
 
-// const BottomTabNavigator = () => {
+// const DummyScreen = () => <View />;
+
+// const BottomTabNavigator = ({ userLoggedIn }) => {
 //   return (
 //     <Tab.Navigator
 //       screenOptions={({ route }) => ({
@@ -19,16 +26,16 @@
 
 //           switch (route.name) {
 //             case 'Home':
-//               iconName = require('./assets/images/Home.png');
+//               iconName = HomeIcon;
 //               label = 'Home';
 //               break;
 //             case 'ForYou':
-//               iconName = require('./assets/images/ForYou.png');
+//               iconName = ForYouIcon;
 //               label = 'For You';
 //               break;
 //             case 'Profile':
-//               iconName = require('./assets/images/Profile.png');
-//               label = 'Profile';
+//               iconName = ProfileIcon;
+//               label = 'Profile'; // 无论用户状态如何，始终显示"Profile"
 //               break;
 //           }
 
@@ -41,15 +48,13 @@
 //         },
 //         tabBarActiveTintColor: '#1ED387',
 //         tabBarInactiveTintColor: 'gray',
+//         tabBarShowLabel: false,
+//         tabBarStyle: styles.tabBar,
 //       })}
-//       tabBarOptions={{
-//         showLabel: false, // 隐藏默认文字标签
-//         style: styles.tabBar,
-//       }}
 //     >
-//       <Tab.Screen name="Home" component={HomeScreen} />
-//       <Tab.Screen name="ForYou" component={ForYouScreen} />
-//       <Tab.Screen name="Profile" component={ProfileScreen} />
+//       <Tab.Screen name="Home" component={DummyScreen} />
+//       <Tab.Screen name="ForYou" component={DummyScreen} />
+//       <Tab.Screen name="Profile" component={userLoggedIn ? ProfileScreen : GuestScreen} options={{ headerShown: false }}/>
 //     </Tab.Navigator>
 //   );
 // };
@@ -60,7 +65,8 @@
 //     paddingVertical: 8,
 //     paddingHorizontal: 20,
 //     justifyContent: 'space-between',
-//     backgroundColor: '#ffffff', // 根据需要调整背景色
+//     backgroundColor: '#070A1A',
+//     borderTopWidth: 0,
 //   },
 //   buttonContainer: {
 //     alignItems: 'center',
@@ -69,45 +75,75 @@
 //     height: 62,
 //     paddingVertical: 4,
 //     paddingHorizontal: 16,
+//     marginBottom: 4,
 //   },
 //   icon: {
 //     width: 24,
 //     height: 24,
-//     tintColor: '#000', // 默认颜色
+//     tintColor: '#FFFFFF',
 //   },
 //   activeIcon: {
 //     width: 24,
 //     height: 24,
-//     tintColor: '#1ED387', // 激活颜色
+//     tintColor: '#1ED387',
 //   },
 //   label: {
-//     width: 130,
 //     fontSize: 14,
 //     fontWeight: '700',
 //     lineHeight: 14,
 //     textAlign: 'center',
-//     color: '#000', // 默认颜色
+//     color: '#FFFFFF',
 //   },
 //   activeLabel: {
-//     width: 130,
 //     fontSize: 14,
 //     fontWeight: '700',
 //     lineHeight: 14,
 //     textAlign: 'center',
-//     color: '#1ED387', // 激活颜色
+//     color: '#1ED387',
 //   },
 // });
 
 // export default BottomTabNavigator;
 
+
+
+
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
 import { Image, Text, View, StyleSheet } from 'react-native';
+
+// Screens
 import ProfileScreen from '../screens/ProfileScreen';
+import WalletScreen from '../screens/WalletScreen';
+import GuestScreen from '../screens/GuestScreen';
+import StoreScreen from '../screens/StoreScreen';
+import LanguageScreen from '../screens/LanguageScreen';
+
+// Assets
+import HomeIcon from '../../assets/images/Home.png';
+import ForYouIcon from '../../assets/images/ForYou.png';
+import ProfileIcon from '../../assets/images/Profile.png';
 
 const Tab = createBottomTabNavigator();
+const ProfileStack = createStackNavigator();
 
-const BottomTabNavigator = () => {
+// DummyScreen as a placeholder
+const DummyScreen = () => <View />;
+
+// ProfileStack to handle both Profile and Wallet Screens
+function ProfileStackScreen({ userLoggedIn }) {
+  return (
+    <ProfileStack.Navigator screenOptions={{ headerShown: false }}>
+      <ProfileStack.Screen name="ProfileMain" component={userLoggedIn ? ProfileScreen : GuestScreen} />
+      <ProfileStack.Screen name="WalletScreen" component={WalletScreen} />
+      <ProfileStack.Screen name="StoreScreen" component={StoreScreen} />
+      <ProfileStack.Screen name="LanguageScreen" component={LanguageScreen} />
+    </ProfileStack.Navigator>
+  );
+}
+
+const BottomTabNavigator = ({ userLoggedIn }) => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -119,16 +155,16 @@ const BottomTabNavigator = () => {
 
           switch (route.name) {
             case 'Home':
-              iconName = require('../../assets/images/Home.png');
+              iconName = HomeIcon;
               label = 'Home';
               break;
             case 'ForYou':
-              iconName = require('../../assets/images/ForYou.png');
+              iconName = ForYouIcon;
               label = 'For You';
               break;
             case 'Profile':
-              iconName = require('../../assets/images/Profile.png');
-              label = 'Profile';
+              iconName = ProfileIcon;
+              label = 'Profile'; // Always display "Profile"
               break;
           }
 
@@ -141,16 +177,14 @@ const BottomTabNavigator = () => {
         },
         tabBarActiveTintColor: '#1ED387',
         tabBarInactiveTintColor: 'gray',
-        tabBarButton: (props) => (props.accessibilityState.selected ? TouchableOpacity : View) // Allow pressing only if selected
+        tabBarShowLabel: false,
+        tabBarStyle: styles.tabBar,
+        headerShown: false  
       })}
-      tabBarOptions={{
-        showLabel: false, // 隐藏默认文字标签
-        style: styles.tabBar,
-      }}
     >
-      <Tab.Screen name="Home" component={View} options={{ tabBarButton: () => null }} />
-      <Tab.Screen name="ForYou" component={View} options={{ tabBarButton: () => null }} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen name="Home" component={DummyScreen} />
+      <Tab.Screen name="ForYou" component={DummyScreen} />
+      <Tab.Screen name="Profile" children={() => <ProfileStackScreen userLoggedIn={userLoggedIn} />} />
     </Tab.Navigator>
   );
 };
@@ -161,7 +195,8 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 20,
     justifyContent: 'space-between',
-    backgroundColor: '#ffffff', // 根据需要调整背景色
+    backgroundColor: '#070A1A',
+    borderTopWidth: 0,
   },
   buttonContainer: {
     alignItems: 'center',
@@ -170,33 +205,41 @@ const styles = StyleSheet.create({
     height: 62,
     paddingVertical: 4,
     paddingHorizontal: 16,
+    marginBottom: 4,
   },
   icon: {
     width: 24,
     height: 24,
-    tintColor: '#000', // 默认颜色
+    tintColor: '#FFFFFF',
   },
   activeIcon: {
     width: 24,
     height: 24,
-    tintColor: '#1ED387', // 激活颜色
+    tintColor: '#1ED387',
   },
   label: {
-    width: 130,
     fontSize: 14,
     fontWeight: '700',
     lineHeight: 14,
     textAlign: 'center',
-    color: '#000', // 默认颜色
+    color: '#FFFFFF',
   },
   activeLabel: {
-    width: 130,
     fontSize: 14,
     fontWeight: '700',
     lineHeight: 14,
     textAlign: 'center',
-    color: '#1ED387', // 激活颜色
+    color: '#1ED387',
   },
 });
 
 export default BottomTabNavigator;
+
+
+
+
+
+
+
+
+

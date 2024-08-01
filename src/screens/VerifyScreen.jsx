@@ -1,14 +1,17 @@
 import React, { useState, useRef } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, StatusBar, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useDispatch } from 'react-redux'; // 导入 useDispatch
 import logo from '../../assets/images/logo.png';
 import * as authService from '../services/authService'; 
+import { logIn } from '../../src/store'; // 导入 logIn action
 
 const VerifyScreen = ({ route }) => {
   const [code, setCode] = useState('');
   const { email } = route.params || {};
   const inputRef = useRef(null);
-  const navigation = useNavigation(); // 使用 navigation 钩子
+  const navigation = useNavigation();
+  const dispatch = useDispatch(); // 使用 useDispatch 钩子获取 dispatch 函数
 
   const handleCodeChange = (text) => {
     const numericText = text.replace(/[^0-9]/g, '').substring(0, 6);
@@ -29,16 +32,22 @@ const VerifyScreen = ({ route }) => {
   };
 
   const verifyCode = async () => {
-    const { success, message, data } = await authService.verifyCode(email, code);
+    const { success, message } = await authService.verifyCode(email, code);
     if (success) {
+      // 验证成功后随机生成一个用户名
+      const newUsername = `user${Math.random().toString(36).substring(2, 8)}`;
+  
       alert('Verification Successful: ' + message);
-      navigation.navigate('ProfileScreen'); // 导航到 ProfileScreen
+      // 使用生成的用户名更新登录状态
+      dispatch(logIn({ username: newUsername }));  // 传递包含用户名的对象
+      navigation.navigate('Main', { screen: 'Profile' });
     } else {
       alert('Verification Failed: ' + message);
-    }
+    } 
   };
+  
 
-  const codeEntered = code.length > 0;
+  const codeEntered = code.length === 6;
 
   return (
     <View style={styles.container}>
@@ -69,7 +78,7 @@ const VerifyScreen = ({ route }) => {
         <TouchableOpacity
           style={codeEntered ? styles.verifyButtonActive : styles.verifyButton}
           onPress={verifyCode}
-          disabled={code.length !== 6}
+          disabled={!codeEntered}
         >
           <Text style={codeEntered ? styles.verifyButtonTextActive : styles.verifyButtonText}>Verify</Text>
         </TouchableOpacity>
@@ -170,10 +179,10 @@ const styles = StyleSheet.create({
     height: 123, 
     position: 'absolute', 
     top: 700, 
-    paddingTop: 24, 
-    paddingRight: 48, 
-    paddingBottom: 56, 
-    paddingLeft: 48, 
+    paddingTop: 24,
+    paddingRight: 48,
+    paddingBottom: 56,
+    paddingLeft: 48,
     marginBottom: 30,
     opacity: 1, 
     backgroundColor: '#070A1A',
@@ -207,8 +216,6 @@ const styles = StyleSheet.create({
 });
 
 export default VerifyScreen;
-
-
 
 
 
