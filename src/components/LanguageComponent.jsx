@@ -7,18 +7,18 @@ import { setLanguage } from '../store';
 
 const LanguageComponent = () => {
   const dispatch = useDispatch();
-  const currentLanguage = useSelector(state => state.language.language); // 获取当前语言状态
-  const [selectedLanguage, setSelectedLanguage] = useState(currentLanguage); // 初始化本地状态
+  const currentLanguage = useSelector(state => state.language.language); 
+  const [selectedLanguage, setSelectedLanguage] = useState(currentLanguage); 
 
   useEffect(() => {
-    //本地状态总是反映 Redux Store 的状态
+    
     setSelectedLanguage(currentLanguage);
   }, [currentLanguage]);
 
   const handleSelectLanguage = (language) => {
     if (selectedLanguage !== language) {
       setSelectedLanguage(language);
-      dispatch(setLanguage(language)); // 更新全局语言状态
+      dispatch(setLanguage(language)); 
     }
   };
 
